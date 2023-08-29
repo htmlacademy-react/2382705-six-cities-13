@@ -24,6 +24,7 @@ import { getAuthStatus } from '../../store/user-data/selectors.ts';
 import getRatingWidth from '../../utils/rating-width.ts';
 import { CITIES } from '../../constants/city.ts';
 import { useAppSelector } from '../../hooks/index.ts';
+import classNames from 'classnames';
 
 function Offer(): JSX.Element {
   const {id} = useParams();
@@ -51,8 +52,6 @@ function Offer(): JSX.Element {
   }
 
   const ratingWidth = getRatingWidth(currentOffer?.rating);
-
-
   useEffect(() => {
     store.dispatch(fetchFullOfferAction(id));
     store.dispatch(fetchNearbyOffersAction(id));
@@ -99,13 +98,13 @@ function Offer(): JSX.Element {
               </div>
               <ul className="offer__features">
                 <li className="offer__feature offer__feature--entire">
-                  {currentOffer?.type}
+                  {currentOffer ? currentOffer.type[0].toUpperCase() + currentOffer.type.slice(1) : null}
                 </li>
                 <li className="offer__feature offer__feature--bedrooms">
-                  {currentOffer?.bedrooms} Bedrooms
+                  {currentOffer?.bedrooms} {currentOffer && (currentOffer.bedrooms > 1 ? 'Bedrooms' : 'Bedroom')}
                 </li>
                 <li className="offer__feature offer__feature--adults">
-                  Max {currentOffer?.maxAdults} adults
+                  Max {currentOffer?.maxAdults} {currentOffer && (currentOffer.maxAdults > 1 ? 'adults' : 'adult')}
                 </li>
               </ul>
               <div className="offer__price">
@@ -129,8 +128,11 @@ function Offer(): JSX.Element {
               <div className="offer__host">
                 <h2 className="offer__host-title">Meet the host</h2>
                 <div className="offer__host-user user">
-                  <div className="offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper">
-                    <img className="offer__avatar user__avatar" src="img/avatar-angelina.jpg" width="74" height="74" alt="Host avatar" />
+                  <div className={classNames('offer__avatar-wrapper', 'user__avatar-wrapper', {
+                    'offer__avatar-wrapper--pro': currentOffer?.host.isPro
+                  })}
+                  >
+                    <img className="offer__avatar user__avatar" src={currentOffer?.host.avatarUrl} width="74" height="74" alt="Host avatar" />
                   </div>
                   <span className="offer__user-name">
                     {currentOffer?.host.name}

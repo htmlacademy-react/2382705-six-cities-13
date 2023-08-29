@@ -8,10 +8,12 @@ const initialState: {
   offerComments: Comment[];
   isFormDisabled: boolean;
   commentsError: boolean;
+  isResponse: boolean;
 } = {
   offerComments: [],
   isFormDisabled: false,
-  commentsError: false
+  commentsError: false,
+  isResponse: false
 };
 
 export const commentsData = createSlice({
@@ -24,16 +26,18 @@ export const commentsData = createSlice({
         state.offerComments = action.payload;
       })
       .addCase(addCommentAction.fulfilled, (state, action) => {
-        state.offerComments.push(action.payload);
+        state.offerComments.unshift(action.payload);
         state.isFormDisabled = false;
         state.commentsError = false;
+        state.isResponse = true;
       })
       .addCase(addCommentAction.pending, (state) => {
         state.isFormDisabled = true;
       })
       .addCase(addCommentAction.rejected, (state) => {
-        state.isFormDisabled = false;
         state.commentsError = true;
+        state.isFormDisabled = false;
+        state.isResponse = true;
       });
   }
 });

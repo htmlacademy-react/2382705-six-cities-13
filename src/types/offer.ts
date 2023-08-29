@@ -24,7 +24,7 @@ export type OfferType = {
 
 export type User = {
   name: string;
-  avatarURL: string;
+  avatarUrl: string;
   isPro: boolean;
 }
 

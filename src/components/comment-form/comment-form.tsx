@@ -6,7 +6,7 @@ import STARBUTTONDETAILS from '../../constants/star-button-details';
 import { Data } from '../../types/comment.ts';
 
 import { addCommentAction } from '../../store/api-actions.ts';
-import { getCommentsError, getFormDisabledStatus } from '../../store/comments-data/selectors.ts';
+import { getCommentsError, getFormDisabledStatus, getResponseStatus } from '../../store/comments-data/selectors.ts';
 
 import { useAppDispatch, useAppSelector } from '../../hooks/index.ts';
 
@@ -22,6 +22,7 @@ function CommentForm({id}: CommentFormProps): JSX.Element {
   const [isChecked, setChecked] = useState<boolean | undefined>(false);
 
   const isFormDisabled = useAppSelector(getFormDisabledStatus);
+  const isResponseGot = useAppSelector(getResponseStatus);
   const isCommentsError = useAppSelector(getCommentsError);
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const dispatch = useAppDispatch();
@@ -40,11 +41,11 @@ function CommentForm({id}: CommentFormProps): JSX.Element {
         },
         offerId: id,
       });
-      setComment('null');
+      /* setComment('null');
       setRating('0');
       textAreaRef.current.value = '';
-      setChecked(false);
-      setDisabled(true);
+      setChecked(false); */
+      /* setDisabled(true); */
     }
     if (isCommentsError) {
       toast.warn('An error occurred while trying to post a comment. Please try again.', {
@@ -73,12 +74,21 @@ function CommentForm({id}: CommentFormProps): JSX.Element {
       setDisabled(false);
     }
   }, [rating, comment]);
+  useEffect(() => {
+    if (isCommentsError === false) {
+      setComment('null');
+      setRating('0');
+      textAreaRef.current.value = '';
+      setChecked(false);
+      setDisabled(true);
+    }
+  }, [isCommentsError, isResponseGot]);
 
   return (
     <form className="reviews__form form" action="#" method="post" onSubmit={submitHandler}>
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
       <div className="reviews__rating-form form__rating">
-        {STARBUTTONDETAILS.map((starButton) => <StarButton key={starButton.title} onChangeHandler={ratingChangeHandler} details={starButton} isChecked={isChecked}/>)}
+        {STARBUTTONDETAILS.map((starButton) => <StarButton key={starButton.title} isFormDisabled = {isFormDisabled} onChangeHandler={ratingChangeHandler} details={starButton} isChecked={isChecked}/>)}
       </div>
       <textarea ref={textAreaRef} disabled={isFormDisabled} className="reviews__textarea form__textarea" id="review" name="review" placeholder="Tell how was your stay, what you like and what can be improved" onChange={textareaChangeHandler}></textarea>
       {error ?
@@ -88,7 +98,7 @@ function CommentForm({id}: CommentFormProps): JSX.Element {
         <p className="reviews__help">
           To submit review please make sure to set <span className="reviews__star">rating</span> and describe your stay with at least <b className="reviews__text-amount">50 characters</b>.
         </p>
-        <button className="reviews__submit form__submit button" disabled={isDisabled} type="submit">Submit</button>
+        <button className="reviews__submit form__submit button" disabled={isDisabled || isFormDisabled} type="submit">Submit</button>
       </div>
     </form>
   );

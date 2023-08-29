@@ -1,4 +1,5 @@
 import { Comment } from '../../types/comment.ts';
+import { sorting } from '../../utils/sorting-comments.ts';
 import Review from '../review/review.tsx';
 
 type ReviewListProps = {
@@ -6,7 +7,7 @@ type ReviewListProps = {
 };
 
 const ReviewList = ({comments}: ReviewListProps): JSX.Element => {
-  const newComments = [...comments].reverse().slice(0, 10);
+  const newComments = sorting(comments).slice(0, 10);
   return (
     <ul className="reviews__list">
       {newComments.map((comment, commentId) => {

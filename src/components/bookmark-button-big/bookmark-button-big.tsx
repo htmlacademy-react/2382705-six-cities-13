@@ -12,7 +12,7 @@ type BookmarkButtonProps = {
   isActive: boolean;
 };
 
-function BookmarkButtonBig({id, isActive}: BookmarkButtonProps) {
+function BookmarkButtonBig({id, isActive = false}: BookmarkButtonProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const isAuthorized = useAppSelector(getAuthStatus);
