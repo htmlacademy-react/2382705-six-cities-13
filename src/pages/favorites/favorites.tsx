@@ -11,20 +11,30 @@ import { useAppDispatch, useAppSelector } from '../../hooks/index.ts';
 import { OfferType } from '../../types/offer.ts';
 import getRatingWidth from '../../utils/rating-width.ts';
 
+const groupOffersByCity = (offers: OfferType[]) => {
+  const offersByCity: { [key: string]: OfferType[] } = {};
+
+  offers.forEach((offer) => {
+    const cityName = offer.city.name;
+
+    if(!offersByCity[cityName]) {
+      offersByCity[cityName] = [];
+    }
+
+    offersByCity[cityName].push(offer);
+  });
+
+  return offersByCity;
+};
+
 function Favorites(): JSX.Element {
   const favorites: OfferType[] = useAppSelector(getFavorites);
   const dispatch = useAppDispatch();
-
-  const favoritesList: OfferType['city']['name'][] = [];
-  favorites.map((favorite) => {
-    if (!favoritesList.includes(favorite.city.name)) {
-      favoritesList.push(favorite.city.name);
-    }
-  });
+  const favoritesList = groupOffersByCity(favorites);
 
   useEffect(() => {
     dispatch(fetchFavoritesAction());
-  });
+  }, [dispatch]);
 
   return (
     favorites.length !== 0 ?
@@ -35,7 +45,7 @@ function Favorites(): JSX.Element {
             <section className="favorites">
               <h1 className="favorites__title">Saved listing</h1>
               <ul className="favorites__list">
-                {favoritesList.map((favoriteCityName, favoriteCityId) => {
+                {Object.keys(favoritesList).map((favoriteCityName, favoriteCityId) => {
                   const keyValue = `${favoriteCityId}-favoriteCity`;
                   return (
                     <li className="favorites__locations-items" key={keyValue}>

@@ -23,7 +23,7 @@ function BookmarkButtonSmall({id, isActive}: BookmarkButtonProps) {
       navigate('/login');
       return;
     }
-    if(isActive) {
+    if (isActive) {
       dispatch(deleteFavoritesAction(id));
     } else {
       dispatch(addFavoritesAction(id));
@@ -32,13 +32,13 @@ function BookmarkButtonSmall({id, isActive}: BookmarkButtonProps) {
 
   return (
     <button className={classNames('place-card__bookmark-button', 'button', {
-      'place-card__bookmark-button--active': isActive && isAuthorized
+      'place-card__bookmark-button--active': isActive && isAuthorized === AuthorizationStatus.Auth
     })} type="button" onClick={handleClick}
     >
       <svg className="place-card__bookmark-icon" width="18" height="19">
         <use xlinkHref="#icon-bookmark"></use>
       </svg>
-      <span className="visually-hidden">{isActive && isAuthorized ? 'In' : 'To'} bookmarks</span>
+      <span className="visually-hidden">{isActive && isAuthorized === AuthorizationStatus.Auth ? 'In' : 'To'} bookmarks</span>
     </button>
   );
 }

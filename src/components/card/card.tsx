@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { OfferType } from '../../types/offer.ts';
 
@@ -17,14 +17,17 @@ type CardProps = {
 
 function Card({offer, onMouseEnter, onMouseLeave, type}: CardProps): JSX.Element {
   const favorites = useAppSelector(getFavorites);
-  let isActive = false;
-  if (favorites.filter((item) => item.id === offer.id).length === 0) {
-    isActive = false;
-  } else {
-    isActive = true;
-  }
+  const [isActive, setIsActive] = useState(false);
+
   const ratingWidth = getRatingWidth(offer.rating);
 
+  useEffect(() => {
+    if (favorites.filter((item) => item.id === offer.id).length === 0) {
+      setIsActive(false);
+    } else {
+      setIsActive(true);
+    }
+  }, [favorites, offer.id]);
   return (
     <article className={`${type}__card place-card`} onMouseLeave={() => onMouseLeave()} onMouseEnter={() => onMouseEnter(offer.id)}>
       {offer.isPremium &&

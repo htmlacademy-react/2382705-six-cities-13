@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import CommentForm from '../../components/comment-form/comment-form.tsx';
@@ -36,6 +36,8 @@ function Offer(): JSX.Element {
   const currentCity = useAppSelector(getActiveCity);
   const isAuth = useAppSelector(getAuthStatus);
 
+  const [isActive, setIsActive] = useState(false);
+
   const nearbyUniqueOffers: OfferType[] = nearbyOffers.filter((offer) => offer.title !== currentOffer?.title);
   const nearbySomeOffers = nearbyUniqueOffers.slice(0, 3);
   const nearbyMapOffers: CombinedOfferType[] = nearbyUniqueOffers.slice(0, 3);
@@ -43,15 +45,16 @@ function Offer(): JSX.Element {
     nearbyMapOffers.push(currentOffer);
   }
   const currentCityData = CITIES.filter((city) => city.name === currentCity)[0];
-
-  let isActive = false;
-  if (favorites.filter((item) => item.id === currentOffer?.id).length === 0) {
-    isActive = false;
-  } else {
-    isActive = true;
-  }
-
   const ratingWidth = getRatingWidth(currentOffer?.rating);
+
+  useEffect(() => {
+    if (favorites.filter((item) => item.id === currentOffer?.id).length === 0) {
+      setIsActive(false);
+    } else {
+      setIsActive(true);
+    }
+  }, [favorites, currentOffer]);
+
   useEffect(() => {
     store.dispatch(fetchFullOfferAction(id));
     store.dispatch(fetchNearbyOffersAction(id));

@@ -3,12 +3,14 @@ import { useDispatch } from 'react-redux';
 
 import Logo from '../logo/logo';
 
-import { logoutAction } from '../../store/api-actions.ts';
+import { checkAuthAction, logoutAction } from '../../store/api-actions.ts';
 import { getAuthStatus, getUserInfo } from '../../store/user-data/selectors';
 import { getFavorites } from '../../store/favorites-data/selectors.ts';
 
 import { useAppSelector } from '../../hooks/index.ts';
 import { AuthorizationStatus } from '../../types/authorization.ts';
+import { useEffect } from 'react';
+import { store } from '../../store/index.ts';
 
 function Header(): JSX.Element {
   const isAuth = useAppSelector(getAuthStatus);
@@ -20,6 +22,10 @@ function Header(): JSX.Element {
   const signOutClickHandler = () => {
     dispatch(logoutAction());
   };
+
+  useEffect(() => {
+    store.dispatch(checkAuthAction());
+  }, [isAuth]);
 
   return (
     <header className="header">

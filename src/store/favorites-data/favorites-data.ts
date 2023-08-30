@@ -7,7 +7,7 @@ import { OfferType } from '../../types/offer';
 const initialState: {
   favorites: OfferType[];
 } = {
-  favorites: []
+  favorites: [],
 };
 
 export const favoritesData = createSlice({

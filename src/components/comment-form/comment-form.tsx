@@ -41,11 +41,6 @@ function CommentForm({id}: CommentFormProps): JSX.Element {
         },
         offerId: id,
       });
-      /* setComment('null');
-      setRating('0');
-      textAreaRef.current.value = '';
-      setChecked(false); */
-      /* setDisabled(true); */
     }
     if (isCommentsError) {
       toast.warn('An error occurred while trying to post a comment. Please try again.', {

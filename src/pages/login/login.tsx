@@ -8,6 +8,10 @@ import { store } from '../../store/index.ts';
 import Logo from '../../components/logo/logo.tsx';
 import { useAppDispatch, useAppSelector } from '../../hooks/index.ts';
 import { AuthData, AuthorizationStatus } from '../../types/authorization.ts';
+import { toast } from 'react-toastify';
+import { CITIES } from '../../constants/city.ts';
+import { changeCity } from '../../store/offers-data/offers-data.ts';
+import getRandomCity from '../../utils/random-city';
 
 function Login(): JSX.Element {
   const loginRef = useRef<HTMLInputElement | null>(null);
@@ -17,14 +21,30 @@ function Login(): JSX.Element {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const emailType = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordType = /^(?=.*[A-Za-z])(?=.*\d).+$/;
   const onSubmit = (authData: AuthData) => {
     dispatch(loginAction(authData));
+  };
+  const randomCity = getRandomCity(CITIES);
+
+  const handleButtonClick = () => {
+    dispatch(changeCity(randomCity));
+    navigate('/');
   };
 
   const submitHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (loginRef.current !== null && passwordRef.current !== null) {
+      if(!emailType.test(loginRef.current.value)) {
+        toast.warn('Invalid email format');
+        return;
+      }
+      if(!passwordType.test(passwordRef.current.value)) {
+        toast.warn('Invalid password format');
+        return;
+      }
       onSubmit({
         login: loginRef.current.value,
         password: passwordRef.current.value,
@@ -37,7 +57,7 @@ function Login(): JSX.Element {
     if (isAuth === AuthorizationStatus.Auth) {
       navigate('/');
     }
-  });
+  }, [isAuth, navigate]);
 
   return (
     <div className="page page--gray page--login">
@@ -67,9 +87,9 @@ function Login(): JSX.Element {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <a className="locations__item-link" href="#">
-                <span>Amsterdam</span>
-              </a>
+              <button className="locations__item-link" onClick={handleButtonClick}>
+                <span>{randomCity}</span>
+              </button>
             </div>
           </section>
         </div>

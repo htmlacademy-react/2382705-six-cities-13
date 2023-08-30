@@ -33,6 +33,7 @@ export const commentsData = createSlice({
       })
       .addCase(addCommentAction.pending, (state) => {
         state.isFormDisabled = true;
+        state.isResponse = false;
       })
       .addCase(addCommentAction.rejected, (state) => {
         state.commentsError = true;

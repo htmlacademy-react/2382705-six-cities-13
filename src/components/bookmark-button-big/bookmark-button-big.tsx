@@ -12,7 +12,7 @@ type BookmarkButtonProps = {
   isActive: boolean;
 };
 
-function BookmarkButtonBig({id, isActive = false}: BookmarkButtonProps) {
+function BookmarkButtonBig({id, isActive}: BookmarkButtonProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const isAuthorized = useAppSelector(getAuthStatus);
@@ -22,7 +22,7 @@ function BookmarkButtonBig({id, isActive = false}: BookmarkButtonProps) {
       navigate('/login');
       return;
     }
-    if(isActive) {
+    if (isActive) {
       dispatch(deleteFavoritesAction(id));
     } else {
       dispatch(addFavoritesAction(id));
@@ -31,13 +31,13 @@ function BookmarkButtonBig({id, isActive = false}: BookmarkButtonProps) {
 
   return (
     <button className={classNames('offer__bookmark-button', 'button', {
-      'offer__bookmark-button--active': isActive && isAuthorized
+      'offer__bookmark-button--active': isActive && isAuthorized === AuthorizationStatus.Auth
     })} type="button" onClick={handleClick}
     >
       <svg className="offer__bookmark-icon" width="31" height="33">
         <use xlinkHref="#icon-bookmark"></use>
       </svg>
-      <span className="visually-hidden">{isActive && isAuthorized ? 'In' : 'To'} bookmarks</span>
+      <span className="visually-hidden">{isActive && isAuthorized === AuthorizationStatus.Auth ? 'In' : 'To'} bookmarks</span>
     </button>
   );
 }

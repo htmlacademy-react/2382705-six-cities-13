@@ -7,11 +7,9 @@ import { NameSpace } from '../../constants/store';
 const initialState: {
   authorizationStatus: AuthorizationStatus;
   user: UserData | null;
-  authPendingStatus: boolean;
 } = {
   authorizationStatus: AuthorizationStatus.Unknown,
   user: null,
-  authPendingStatus: false
 };
 
 export const userData = createSlice({
@@ -23,15 +21,10 @@ export const userData = createSlice({
       .addCase(checkAuthAction.fulfilled, (state, action) => {
         state.authorizationStatus = AuthorizationStatus.Auth;
         state.user = action.payload;
-        state.authPendingStatus = false;
       })
       .addCase(checkAuthAction.rejected, (state) => {
         state.authorizationStatus = AuthorizationStatus.NoAuth;
         state.user = null;
-        state.authPendingStatus = false;
-      })
-      .addCase(checkAuthAction.pending, (state) => {
-        state.authPendingStatus = true;
       })
       .addCase(loginAction.fulfilled, (state, action) => {
         state.authorizationStatus = AuthorizationStatus.Auth;

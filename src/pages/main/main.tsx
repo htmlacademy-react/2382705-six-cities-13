@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CardList from '../../components/card-list/card-list.tsx';
 import Map from '../../components/map/map.tsx';
 import CitiesList from '../../components/cities-list/cities-list.tsx';
@@ -20,14 +20,19 @@ function MainPage(): JSX.Element {
   const activeOfferId = useAppSelector(getActiveOfferId);
 
   const [activeSorting, setActiveSorting] = useState<SortingType>('Popular');
+  const [activeOffer, setActiveOffer] = useState<OfferType | null>(null);
 
   const currentCityData = CITIES.filter((city) => city.name === currentCity)[0];
   const currentCityOfferList: OfferType[] = currentOfferList.filter((offer) => offer.city.name === currentCity);
 
-  let activeOffer = null;
-  if (activeOfferId !== null) {
-    activeOffer = currentCityOfferList.filter((offer) => offer.id === activeOfferId)[0];
-  }
+  useEffect(() => {
+    if (activeOfferId !== null) {
+      setActiveOffer(currentCityOfferList.filter((offer) => offer.id === activeOfferId)[0]);
+    } else {
+      setActiveOffer(null);
+    }
+  }, [activeOfferId, currentCityOfferList]);
+
   return (
     <div className="page page--gray page--main">
       <Header />
