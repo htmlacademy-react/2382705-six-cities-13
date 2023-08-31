@@ -20,6 +20,10 @@ function Card({offer, onMouseEnter, onMouseLeave, type}: CardProps): JSX.Element
   const [isActive, setIsActive] = useState(false);
 
   const ratingWidth = getRatingWidth(offer.rating);
+  let actualType = offer.type;
+  if (actualType === 'room') {
+    actualType = 'Private Room';
+  }
 
   useEffect(() => {
     if (favorites.filter((item) => item.id === offer.id).length === 0) {
@@ -58,7 +62,7 @@ function Card({offer, onMouseEnter, onMouseLeave, type}: CardProps): JSX.Element
             {offer.title}
           </Link>
         </h2>
-        <p className="place-card__type">{offer.type[0].toUpperCase() + offer.type.slice(1)}</p>
+        <p className="place-card__type">{actualType[0].toUpperCase() + actualType.slice(1)}</p>
       </div>
     </article>
   );

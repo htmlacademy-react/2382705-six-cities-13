@@ -61,6 +61,10 @@ function Favorites(): JSX.Element {
                           if (favorite.city.name === favoriteCityName) {
                             const keyNewValue = `${favoriteId}-favorite`;
                             const ratingWidth = getRatingWidth(favorite.rating);
+                            let actualType = favorite.type;
+                            if (actualType === 'room') {
+                              actualType = 'Private Room';
+                            }
                             return (
                               <article className="favorites__card place-card" key={keyNewValue}>
                                 {favorite.isPremium &&
@@ -89,7 +93,7 @@ function Favorites(): JSX.Element {
                                   <h2 className="place-card__name">
                                     <a href="#">{favorite.title}</a>
                                   </h2>
-                                  <p className="place-card__type">{favorite.type}</p>
+                                  <p className="place-card__type">{actualType[0].toUpperCase() + actualType.slice(1)}</p>
                                 </div>
                               </article>
                             );

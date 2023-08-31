@@ -6,10 +6,10 @@ type ReviewListProps = {
   comments: Comment[];
 };
 
-const maxCommentsAmount = 10;
+const MAXCOMMENTSAMOUNT = 10;
 
 const ReviewList = ({comments}: ReviewListProps): JSX.Element => {
-  const newComments = sortComments(comments).slice(0, maxCommentsAmount);
+  const newComments = sortComments(comments).slice(0, MAXCOMMENTSAMOUNT);
   return (
     <ul className="reviews__list">
       {newComments.map((comment, commentId) => {
