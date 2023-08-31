@@ -3,6 +3,6 @@ export enum NameSpace {
   Offer = 'OFFER',
   User = 'USER',
   Favorites = 'FAVORITES',
-  Nearby = 'NEARBYOFFERS',
+  NearbyOffers = 'NEARBYOFFERS',
   Comments = 'COMMENTS'
 }

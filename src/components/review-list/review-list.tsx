@@ -1,13 +1,15 @@
 import { Comment } from '../../types/comment.ts';
-import { sorting } from '../../utils/sorting-comments.ts';
+import { sortComments } from '../../utils/sorting-comments.ts';
 import Review from '../review/review.tsx';
 
 type ReviewListProps = {
   comments: Comment[];
 };
 
+const maxCommentsAmount = 10;
+
 const ReviewList = ({comments}: ReviewListProps): JSX.Element => {
-  const newComments = sorting(comments).slice(0, 10);
+  const newComments = sortComments(comments).slice(0, maxCommentsAmount);
   return (
     <ul className="reviews__list">
       {newComments.map((comment, commentId) => {

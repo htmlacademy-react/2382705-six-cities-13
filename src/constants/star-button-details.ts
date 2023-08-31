@@ -1,6 +1,6 @@
 import { StarButtonDetailsType } from '../components/star-button/star-button';
 
-const STARBUTTONDETAILS: StarButtonDetailsType[] = [
+const StarButtonDetails: StarButtonDetailsType[] = [
   {
     value: 5,
     title: 'perfect'
@@ -23,4 +23,4 @@ const STARBUTTONDETAILS: StarButtonDetailsType[] = [
   }
 ];
 
-export default STARBUTTONDETAILS;
+export default StarButtonDetails;

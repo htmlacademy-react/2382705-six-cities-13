@@ -13,7 +13,7 @@ export const rootReducer = combineReducers({
   [NameSpace.Offer]: offerData.reducer,
   [NameSpace.Offers]: offersData.reducer,
   [NameSpace.User]: userData.reducer,
-  [NameSpace.Nearby]: nearbyData.reducer,
+  [NameSpace.NearbyOffers]: nearbyData.reducer,
   [NameSpace.Favorites]: favoritesData.reducer,
   [NameSpace.Comments]: commentsData.reducer,
 });

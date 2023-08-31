@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import CommentForm from '../../components/comment-form/comment-form.tsx';
 import ReviewList from '../../components/review-list/review-list.tsx';
@@ -14,7 +14,7 @@ import { AuthorizationStatus } from '../../types/authorization.ts';
 
 import { store } from '../../store/index.ts';
 import { fetchFullOfferAction, fetchNearbyOffersAction, fetchOfferCommentsAction } from '../../store/api-actions.ts';
-import { getOffer } from '../../store/offer-data/selectors.ts';
+import { getOffer, getOfferFoundStatus } from '../../store/offer-data/selectors.ts';
 import { getNearbyOffers } from '../../store/nearby-data/selectors.ts';
 import { getComments } from '../../store/comments-data/selectors.ts';
 import { getActiveCity } from '../../store/offers-data/selectors.ts';
@@ -25,6 +25,7 @@ import getRatingWidth from '../../utils/rating-width.ts';
 import { CITIES } from '../../constants/city.ts';
 import { useAppSelector } from '../../hooks/index.ts';
 import classNames from 'classnames';
+import LoadingScreen from '../loading-screen/loading-screen.tsx';
 
 function Offer(): JSX.Element {
   const {id} = useParams();
@@ -35,17 +36,26 @@ function Offer(): JSX.Element {
   const favorites = useAppSelector(getFavorites);
   const currentCity = useAppSelector(getActiveCity);
   const isAuth = useAppSelector(getAuthStatus);
+  const noSuchOfferFound = useAppSelector(getOfferFoundStatus);
+  const navigate = useNavigate();
+
 
   const [isActive, setIsActive] = useState(false);
 
   const nearbyUniqueOffers: OfferType[] = nearbyOffers.filter((offer) => offer.title !== currentOffer?.title);
-  const nearbySomeOffers = nearbyUniqueOffers.slice(0, 3);
-  const nearbyMapOffers: CombinedOfferType[] = nearbyUniqueOffers.slice(0, 3);
+  const nearbyMaxAmount = 3;
+  const maxImagesAmount = 6;
+  const nearbySomeOffers = nearbyUniqueOffers.slice(0, nearbyMaxAmount);
+  const nearbyMapOffers: CombinedOfferType[] = nearbyUniqueOffers.slice(0, nearbyMaxAmount);
   if (currentOffer) {
     nearbyMapOffers.push(currentOffer);
   }
   const currentCityData = CITIES.filter((city) => city.name === currentCity)[0];
   const ratingWidth = getRatingWidth(currentOffer?.rating);
+  let actualType = currentOffer?.type;
+  if (actualType === 'room') {
+    actualType = 'Private Room';
+  }
 
   useEffect(() => {
     if (favorites.filter((item) => item.id === currentOffer?.id).length === 0) {
@@ -56,20 +66,38 @@ function Offer(): JSX.Element {
   }, [favorites, currentOffer]);
 
   useEffect(() => {
-    store.dispatch(fetchFullOfferAction(id));
-    store.dispatch(fetchNearbyOffersAction(id));
-    store.dispatch(fetchOfferCommentsAction(id));
-  }, [id]);
+    if (noSuchOfferFound === 'unknown') {
+      store.dispatch(fetchFullOfferAction(id));
+    }
+  }, [id, noSuchOfferFound]);
+
+  useEffect(() => {
+    if (noSuchOfferFound === 'true') {
+      navigate('*');
+    }
+  }, [noSuchOfferFound, navigate]);
+
+  useEffect(() => {
+    if (noSuchOfferFound === 'false') {
+      store.dispatch(fetchNearbyOffersAction(id));
+      store.dispatch(fetchOfferCommentsAction(id));
+    }
+  }, [id, noSuchOfferFound]);
+
+  if (noSuchOfferFound === 'unknown') {
+    return (
+      <LoadingScreen />
+    );
+  }
 
   return (
     <div className="page">
       <Header />
-
       <main className="page__main page__main--offer">
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {currentOffer?.images.map((image, imageId) => {
+              {currentOffer?.images.slice(0, maxImagesAmount).map((image, imageId) => {
                 const keyValue = `${imageId}-image`;
                 return (
                   <div className="offer__image-wrapper" key={keyValue}>
@@ -101,7 +129,7 @@ function Offer(): JSX.Element {
               </div>
               <ul className="offer__features">
                 <li className="offer__feature offer__feature--entire">
-                  {currentOffer ? currentOffer.type[0].toUpperCase() + currentOffer.type.slice(1) : null}
+                  {actualType ? actualType[0].toUpperCase() + actualType.slice(1) : null}
                 </li>
                 <li className="offer__feature offer__feature--bedrooms">
                   {currentOffer?.bedrooms} {currentOffer && (currentOffer.bedrooms > 1 ? 'Bedrooms' : 'Bedroom')}

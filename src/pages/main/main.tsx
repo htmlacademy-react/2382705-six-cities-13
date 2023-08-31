@@ -12,6 +12,8 @@ import { OfferType } from '../../types/offer.ts';
 import { CITIES } from '../../constants/city.ts';
 import { useAppSelector } from '../../hooks/index.ts';
 import { getActiveCity, getActiveOfferId, getOffers } from '../../store/offers-data/selectors.ts';
+import { resetOfferFoundStatus } from '../../store/offer-data/offer-data.ts';
+import { store } from '../../store/index.ts';
 
 function MainPage(): JSX.Element {
 
@@ -32,6 +34,10 @@ function MainPage(): JSX.Element {
       setActiveOffer(null);
     }
   }, [activeOfferId, currentCityOfferList]);
+
+  useEffect(() => {
+    store.dispatch(resetOfferFoundStatus());
+  }, []);
 
   return (
     <div className="page page--gray page--main">
